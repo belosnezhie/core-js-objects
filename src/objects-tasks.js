@@ -82,8 +82,13 @@ function removeProperties(obj, keys) {
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 2}) => true
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 3}) => false
  */
-function compareObjects(/* obj1, obj2 */) {
-  throw new Error('Not implemented');
+function compareObjects(obj1, obj2) {
+  const firstItem = JSON.stringify(obj1);
+  const secondItem = JSON.stringify(obj2);
+  if (firstItem === secondItem) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -97,8 +102,11 @@ function compareObjects(/* obj1, obj2 */) {
  *    isEmptyObject({}) => true
  *    isEmptyObject({a: 1}) => false
  */
-function isEmptyObject(/* obj */) {
-  throw new Error('Not implemented');
+function isEmptyObject(obj) {
+  if (Object.keys(obj).length === 0) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -117,8 +125,8 @@ function isEmptyObject(/* obj */) {
  *    immutableObj.newProp = 'new';
  *    console.log(immutableObj) => {a: 1, b: 2}
  */
-function makeImmutable(/* obj */) {
-  throw new Error('Not implemented');
+function makeImmutable(obj) {
+  return Object.freeze(obj);
 }
 
 /**
@@ -131,8 +139,24 @@ function makeImmutable(/* obj */) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {
-  throw new Error('Not implemented');
+function makeWord(lettersObject) {
+  if (Object.keys(lettersObject).length === 0) {
+    return '';
+  }
+  const indexes = [];
+  indexes.push(Object.values(lettersObject));
+  const flatIndexes = indexes.flat(2);
+  const arr = new Array(flatIndexes.length - 1);
+  const filledArr = arr.fill(0);
+  const entries = Object.entries(lettersObject);
+  entries.forEach((entry) => {
+    const letter = entry[0];
+    const positions = entry[1];
+    positions.forEach((position) => {
+      filledArr[position] = letter;
+    });
+  });
+  return filledArr.join('');
 }
 
 /**
@@ -149,8 +173,23 @@ function makeWord(/* lettersObject */) {
  *    sellTickets([25, 25, 50]) => true
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
-function sellTickets(/* queue */) {
-  throw new Error('Not implemented');
+function sellTickets(queue) {
+  let counter = 0;
+  let result = true;
+  queue.forEach((bill) => {
+    if (bill === 25) {
+      counter += 25;
+    } else {
+      const change = bill - 25;
+      if (counter > change) {
+        counter -= change;
+      } else {
+        result = false;
+      }
+    }
+    return counter;
+  });
+  return result;
 }
 
 /**
@@ -166,8 +205,12 @@ function sellTickets(/* queue */) {
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => {
+    return this.width * this.height;
+  };
 }
 
 /**
@@ -180,8 +223,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 /**
@@ -225,8 +268,19 @@ function fromJSON(/* proto, json */) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => {
+    const tempA = a.country + a.city;
+    const tempB = b.country + b.city;
+
+    if (tempA < tempB) {
+      return -1;
+    }
+    if (tempA > tempB) {
+      return 1;
+    }
+    return 0;
+  });
 }
 
 /**
@@ -259,8 +313,21 @@ function sortCitiesArray(/* arr */) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const result = new Map();
+  array.map((currentValue) => {
+    const key = keySelector(currentValue);
+    const value = valueSelector(currentValue);
+
+    if (result.has(key) === false) {
+      result.set(key, []);
+    }
+    const prevArr = result.get(key);
+    prevArr.push(value);
+    result.set(key, prevArr);
+    return result;
+  });
+  return result;
 }
 
 /**
