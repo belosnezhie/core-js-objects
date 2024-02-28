@@ -33,16 +33,23 @@ function shallowCopy(obj) {
  *    mergeObjects([{a: 1, b: 2}, {b: 3, c: 5}]) => {a: 1, b: 5, c: 5}
  *    mergeObjects([]) => {}
  */
-function mergeObjects(/* objects */) {
-  // const mergedObject = {};
-  // objects.forEach((item) => {
-  //   const entries = Object.entries(item);
-  //   console.log(entries);
-  // });
-  // console.log(mergedObject);
-  // const arrEntries = objects.entries();
-  // console.log(arrEntries);
-  throw new Error('Not implemented');
+function mergeObjects(objects) {
+  const mergedObject = {};
+  objects.forEach((item) => {
+    const entries = Object.entries(item);
+    entries.forEach((i) => {
+      const key = i[0];
+      const value = i[1];
+      if (!Object.hasOwn(mergedObject, key)) {
+        mergedObject[key] = value;
+      } else {
+        const prevValue = mergedObject[key];
+        delete mergedObject[key];
+        mergedObject[key] = value + prevValue;
+      }
+    });
+  });
+  return mergedObject;
 }
 
 /**
@@ -60,7 +67,6 @@ function mergeObjects(/* objects */) {
  */
 function removeProperties(obj, keys) {
   const map = new Map(Object.entries(obj));
-  // сделала сет, это объект, в нем лежат массивчики с ключ-значение
   map.forEach((value, key) => {
     if (keys.includes(key)) {
       map.delete(key);
@@ -238,8 +244,9 @@ function getJSON(obj) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const inner = JSON.parse(json);
+  return Object.setPrototypeOf(inner, proto);
 }
 
 /**
